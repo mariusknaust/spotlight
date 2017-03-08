@@ -11,8 +11,29 @@ path="$HOME/.spotlight/background.jpg"
 	
 wget -qO "$path" "$landscapeUrl"
 
-gsettings set org.gnome.desktop.background picture-options "zoom"
-gsettings set org.gnome.desktop.background picture-uri "file://$path"
+if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]; then
+	monis=$(xfconf-query -c xfce4-desktop -p /backdrop -l | \
+			egrep -e "screen.*/monitor.*image-path$" \
+				  -e "screen.*/monitor.*/last-image$")
 
-notify-send "Background changed" "$title ($titleUrl)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
-echo "Background changed to $title ($titleUrl)" | systemd-cat -t spotlight
+	for i in $monis; do
+		xfconf-query -c xfce4-desktop -p $i -s $path
+	done
+
+	notify-send "Background changed" "$title" \
+				--icon=preferences-desktop-wallpaper \
+				--urgency=low --hint=string:desktop-entry:spotlight\
+				--hint=string:desktop-entry:spotlight
+
+	echo "Background changed to $title ($titleUrl)" | systemd-cat -t spotlight
+
+elif [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]; then
+	gsettings set org.gnome.desktop.background picture-options "zoom"
+	gsettings set org.gnome.desktop.background picture-uri "file://$path"
+
+	notify-send "Background changed" "$title ($titleUrl)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
+	echo "Background changed to $title ($titleUrl)" | systemd-cat -t spotlight
+
+else
+	echo "DE not supported" | systemd-cat -t spotlight
+fi
