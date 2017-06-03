@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Spotlight
-Comment=Displays a new background image
+Comment=Fetch a new background image from Spotlight
 Keywords=background;wallpaper;
 Exec=spotlight.sh
 Icon=preferences-desktop-wallpaper
