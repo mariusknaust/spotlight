@@ -1,6 +1,6 @@
 #! /bin/bash
 
-item=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items | .[0].item")
+item=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items | .[0].item" | perl -0pe 's/.*?adData = (.*?);.*/\1/s')
 
 landscapeUrl=$(echo $item | jq -r ".ad.image_fullscreen_001_landscape.u")
 title=$(echo $item | jq -r ".ad.title_text.tx")
