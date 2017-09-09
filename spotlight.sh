@@ -2,6 +2,11 @@
 
 items=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items")
 
+function decodeURL
+{
+	printf "%b\n" "$(sed 's/+/ /g; s/%\([0-9A-F][0-9A-F]\)/\\x\1/g')"
+}
+
 function setImage
 {
 	index="$1"
@@ -11,7 +16,7 @@ function setImage
 
 	landscapeUrl=$(jq -r ".ad.image_fullscreen_001_landscape.u" <<< $item)
 	title=$(jq -r ".ad.title_text.tx" <<< $item)
-	searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | perl -pe 's/.*?(http.*?)&.*/\1/')
+	searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | perl -pe 's/.*?q=(.*?)&.*/\1/' | decodeURL)
 
 	path="$HOME/.spotlight/$name.jpg"
 
