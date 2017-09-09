@@ -1,18 +1,32 @@
 #! /bin/bash
 
-item=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items | .[0].item" | perl -0pe 's/.*?adData = (.*?);.*/\1/s')
+items=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items")
 
-landscapeUrl=$(echo $item | jq -r ".ad.image_fullscreen_001_landscape.u")
-title=$(echo $item | jq -r ".ad.title_text.tx")
-titleUrl=$(echo $item | jq -r ".ad.title_destination_url.u" | perl -pe 's/.*?(http.*)/\1/')
+function setImage
+{
+	index="$1"
+	name="$2"
+
+	item=$(jq -r ".[$index].item" <<< $items | perl -0pe 's/.*?adData = (.*?);.*/\1/s')
+
+	landscapeUrl=$(jq -r ".ad.image_fullscreen_001_landscape.u" <<< $item)
+	title=$(jq -r ".ad.title_text.tx" <<< $item)
+	searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | perl -pe 's/.*?(http.*?)&.*/\1/')
+
+	path="$HOME/.spotlight/$name.jpg"
+
+	wget -qO "$path" "$landscapeUrl"
+
+	gsettings set "org.gnome.desktop.$name" picture-options "zoom"
+	gsettings set "org.gnome.desktop.$name" picture-uri "file://$path"
+
+	capitalName="$(tr '[:lower:]' '[:upper:]' <<< ${name:0:1})${name:1}"
+
+	notify-send "$capitalName changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low #--hint=string:desktop-entry:spotlight
+	systemd-cat -t spotlight <<< "$capitalName changed to $title ($searchTerms)"
+}
 
 mkdir -p "$HOME/.spotlight"
-path="$HOME/.spotlight/background.jpg"
-	
-wget -qO "$path" "$landscapeUrl"
 
-gsettings set org.gnome.desktop.background picture-options "zoom"
-gsettings set org.gnome.desktop.background picture-uri "file://$path"
-
-notify-send "Background changed" "$title ($titleUrl)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
-echo "Background changed to $title ($titleUrl)" | systemd-cat -t spotlight
+setImage "0" "background"
+setImage "1" "screensaver"
