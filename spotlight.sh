@@ -1,6 +1,15 @@
 #! /bin/bash
 
-items=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US" | jq -r ".batchrsp.items")
+response=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US")
+status=$?
+
+if [ $status -ne 0 ]
+then
+	systemd-cat -t spotlight -p emerg <<< "Query failed"
+	exit $status
+fi
+
+items=$(jq -r ".batchrsp.items" <<< $response)
 
 function decodeURL
 {
@@ -28,7 +37,7 @@ function setImage
 	capitalName="$(tr '[:lower:]' '[:upper:]' <<< ${name:0:1})${name:1}"
 
 	notify-send "$capitalName changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low #--hint=string:desktop-entry:spotlight
-	systemd-cat -t spotlight <<< "$capitalName changed to $title ($searchTerms)"
+	systemd-cat -t spotlight -p info <<< "$capitalName changed to $title ($searchTerms)"
 }
 
 mkdir -p "$HOME/.spotlight"
