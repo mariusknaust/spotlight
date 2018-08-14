@@ -1,5 +1,7 @@
 #! /bin/bash
 
+dataPath="${XDG_DATA_HOME:-$HOME/.local/share}/spotlight"
+
 function decodeURL
 {
 	printf "%b\n" "$(sed 's/+/ /g; s/%\([0-9A-F][0-9A-F]\)/\\x\1/g')"
@@ -25,7 +27,8 @@ function setImage
 	title=$(jq -r ".ad.title_text.tx" <<< $item)
 	searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | perl -pe 's/.*?q=(.*?)&.*/\1/' | decodeURL)
 
-	path="$HOME/.spotlight/$name.jpg"
+	mkdir -p "$dataPath"
+	path="$dataPath/$name.jpg"
 
 	wget -qO "$path" "$landscapeUrl"
 	sha256calculated=$(sha256sum $path | cut -d " " -f 1)
@@ -44,8 +47,6 @@ function setImage
 	notify-send "$capitalName changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low #--hint=string:desktop-entry:spotlight
 	systemd-cat -t spotlight -p info <<< "$capitalName changed to $title ($searchTerms)"
 }
-
-mkdir -p "$HOME/.spotlight"
 
 setImage "background"
 setImage "screensaver"
