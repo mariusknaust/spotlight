@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 dataPath="${XDG_DATA_HOME:-$HOME/.local/share}/spotlight"
 
@@ -9,7 +9,7 @@ function decodeURL
 
 function setImage
 {
-	name="$1"
+	local name="$1"
 
 	response=$(wget -qO- "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&ua=WindowsShellClient&lc=en,en-US&ctry=US")
 	status=$?
@@ -39,8 +39,18 @@ function setImage
 		exit 1
 	fi
 
-	gsettings set "org.gnome.desktop.$name" picture-options "zoom"
-	gsettings set "org.gnome.desktop.$name" picture-uri "file://$path"
+	if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]
+	then
+		gsettings set "org.gnome.desktop.$name" picture-options "zoom"
+		gsettings set "org.gnome.desktop.$name" picture-uri "file://$path"
+	elif [ "$XDG_CURRENT_DESKTOP" = "X-Cinnamon" ]
+	then
+		gsettings set "org.cinnamon.desktop.$name" picture-options "zoom"
+		gsettings set "org.cinnamon.desktop.$name" picture-uri "file://$path"
+	else
+		systemd-cat -t spotlight -p emerg <<< "Unsupported desktop envoironment: $XDG_CURRENT_DESKTOP"
+		exit 1
+	fi
 
 	capitalName="$(tr '[:lower:]' '[:upper:]' <<< ${name:0:1})${name:1}"
 
@@ -49,4 +59,8 @@ function setImage
 }
 
 setImage "background"
-setImage "screensaver"
+
+if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]
+then
+	setImage "screensaver"
+fi
