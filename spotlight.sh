@@ -58,7 +58,7 @@ function setImage
 			xfconf-query --channel xfce4-desktop --property $property --set $path
 		done
 	else
-		systemd-cat -t spotlight -p emerg <<< "Unsupported desktop envoironment: $XDG_CURRENT_DESKTOP"
+		systemd-cat -t spotlight -p emerg <<< "Unsupported desktop envoironment: ${XDG_CURRENT_DESKTOP:-None}"
 		exit 1
 	fi
 
