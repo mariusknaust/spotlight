@@ -39,28 +39,8 @@ function setImage
 		exit 1
 	fi
 
-	if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]
-	then
-		gsettings set "org.gnome.desktop.$name" picture-options "zoom"
-		gsettings set "org.gnome.desktop.$name" picture-uri "file://$path"
-	elif [ "$XDG_CURRENT_DESKTOP" = "X-Cinnamon" ]
-	then
-		gsettings set "org.cinnamon.desktop.$name" picture-options "zoom"
-		gsettings set "org.cinnamon.desktop.$name" picture-uri "file://$path"
-	elif [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
-	then
-		monitorProperties=$(xfconf-query -c xfce4-desktop --property /backdrop -l | \
-			egrep -e "screen[0-9]+/monitor[0-9]+/image-path$" \
-				-e "screen[0-9]+/monitor[0-9]+/last-image$")
-
-		for property in $monitorProperties
-		do
-			xfconf-query --channel xfce4-desktop --property $property --set $path
-		done
-	else
-		systemd-cat -t spotlight -p emerg <<< "Unsupported desktop envoironment: ${XDG_CURRENT_DESKTOP:-None}"
-		exit 1
-	fi
+	gsettings set "org.gnome.desktop.$name" picture-options "zoom"
+	gsettings set "org.gnome.desktop.$name" picture-uri "file://$path"
 
 	capitalName="$(tr '[:lower:]' '[:upper:]' <<< ${name:0:1})${name:1}"
 
@@ -69,8 +49,4 @@ function setImage
 }
 
 setImage "background"
-
-if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]
-then
-	setImage "screensaver"
-fi
+setImage "screensaver"
