@@ -16,6 +16,12 @@ Local:
 ~/.local/share/systemd/user/spotlight.timer
 ~/.local/share/applications/spotlight.desktop
 ```
+Dependencies:
+* wget
+* jq
+* perl
+* glib2 (gnome)
+* systemd
 
 ## Usage
 Run `systemctl --user enable spotlight.timer` to get a new picture every day
