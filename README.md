@@ -20,7 +20,11 @@ Windows 10 Spotlight Background images for Gnome
 * systemd
 
 ## Usage
-Run `systemctl --user enable spotlight.timer` to get a new picture every day
+Run `systemctl --user enable spotlight.timer` to get a new picture every day.
+
+To trigger it manually you can either use the desktop entry by looking for _spotlight_ in your gnome application menu, run `spotlight.sh` in a terminal, or trigger the service manually with `systemctl --user start spotlight.service`.
+
+Use the system log to get the past image descriptions, e.g. for the last two (the current background and lockscreen) `journalctl -t spotlight -n 2`.
 
 ## Packages
 ### Arch Linux
