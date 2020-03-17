@@ -21,7 +21,7 @@ item=$(jq -r ".batchrsp.items[0].item" <<< $response)
 landscapeUrl=$(jq -r ".ad.image_fullscreen_001_landscape.u" <<< $item)
 sha256=$(jq -r ".ad.image_fullscreen_001_landscape.sha256" <<< $item | base64 -d | hexdump -ve "1/1 \"%.2x\"")
 title=$(jq -r ".ad.title_text.tx" <<< $item)
-searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | perl -pe 's/.*?q=(.*?)&.*/\1/' | decodeURL)
+searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | sed 's/.*q=\([^&]*\).*/\1/' | decodeURL)
 
 mkdir -p "$dataPath"
 path="$dataPath/background.jpg"

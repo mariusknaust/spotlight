@@ -15,7 +15,7 @@ Windows 10 Spotlight Background images for Gnome
 ### Dependencies
 * wget
 * jq
-* perl
+* sed
 * glib2 (gnome)
 * systemd
 
