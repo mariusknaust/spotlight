@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 
-dataPath="${XDG_DATA_HOME:-$HOME/.local/share}/spotlight"
-store=false
+conf_file=/etc/spotlight.conf
+
+if [ -f "$conf_file" ]; then
+	source "$conf_file"
+fi
+
+if [ -z "$dataPath" ]; then
+	dataPath="${XDG_DATA_HOME:-$HOME/.local/share}/spotlight"
+fi
+
+if [ -z "$store" ]; then
+	store=false
+fi
 
 while getopts ":hp:s" opt; do
   case ${opt} in

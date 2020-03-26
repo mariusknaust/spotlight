@@ -26,15 +26,17 @@ To trigger it manually you can either use the desktop entry by looking for _spot
 
 Use the system log to get the past image descriptions, e.g. for the the current background `journalctl -t spotlight -n 1`.
 
-## Options
+## Configuration
 
-spotlight.sh accepts the following command line options:
+Spotlight does not require particular configuration.
+
+However, while the default behaviour of spotlight is to discard the images that it downloads, this can be changed by means of the `/etc/spotlight.conf` file.
+
+In addition, for quick testing, the same options can be passed on the line options when calling spotlight.sh directly:
 
  * -h shows a small help message
  * -p specifies a working path. Defaults to "$HOME/.local/share/spotlight"
  * -s stores the images into the folder path/archive/
-
-You can test them by calling `spotlight.sh` from a terminal and/or add them in the `spotlight.service` file at the end of the `ExecStart=` line. Adding a small config file would be nice...
 
 ## Packages
 ### Arch Linux
