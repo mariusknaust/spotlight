@@ -5,18 +5,21 @@ store=false
 
 while getopts ":hp:s" opt; do
   case ${opt} in
-    h ) echo "spotlight.sh - Windows 10 Spotlight Background images for Gnome"
+    h ) echo ""
+        echo "spotlight.sh - Windows 10 Spotlight Background images for Gnome"
         echo ""
         echo "Options:"
         echo "  -h shows this message"
         echo "  -p specifies a working path. Defaults to \"$HOME/.local/share/spotlight\""
-        echo "  -s stores the images at path/archive/"
+        echo "  -s stores the images into the folder path/archive/"
+        exit 1
       ;;
     p ) dataPath=$OPTARG
       ;;
     s ) store=true
       ;;
-    \? ) echo "Usage: spotlight.sh [-p working path] [-s save images]"
+    \? ) echo "Usage: spotlight.sh [-h additional help] [-p working path] [-s store images]"
+         exit 2
       ;;
   esac
 done
