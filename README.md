@@ -30,8 +30,8 @@ Use the system log to get the past image descriptions, e.g. for the the current 
 
 spotlight.sh accepts the following command line options:
 
- * -h shows this message
- * -p specifies a working path. Defaults to "/home/dario/.local/share/spotlight"
+ * -h shows a small help message
+ * -p specifies a working path. Defaults to "$HOME/.local/share/spotlight"
  * -s stores the images into the folder path/archive/
 
 You can test them by calling `spotlight.sh` from a terminal and/or add them in the `spotlight.service` file at the end of the `ExecStart=` line. Adding a small config file would be nice...
