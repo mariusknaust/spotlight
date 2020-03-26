@@ -30,9 +30,9 @@ Use the system log to get the past image descriptions, e.g. for the the current 
 
 Spotlight does not require particular configuration.
 
-However, while the default behaviour of spotlight is to discard the images that it downloads, this can be changed by means of the `/etc/spotlight.conf` file.
+The default behaviour of spotlight is to discard the images that it downloads. The `/etc/spotlight.conf` file allows to alter this, by storing the images in the spotlight working path.
 
-In addition, for quick testing, the same options can be passed on the line options when calling spotlight.sh directly:
+The settings specified in the config file can be overridden when calling spotlight.sh directly from the terminal:
 
  * -h shows a small help message
  * -p specifies a working path. Defaults to "$HOME/.local/share/spotlight"
