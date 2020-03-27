@@ -70,8 +70,10 @@ fi
 
 if [ "$save" = true ] 
 then
-        mkdir -p "$dataPath/archive"
-	cp "$img" "$dataPath/archive/$(date +%Y%m%d) $title ($searchTerms).jpg"
+	stored_img="$dataPath/archive/$(date +%Y%m%d) $title ($searchTerms).jpg"
+	mkdir -p "$dataPath/archive"
+	mv "$img" "$stored_img"
+	ln -sfn "$stored_img" "$img"
 fi
 
 gsettings set "org.gnome.desktop.background" picture-options "zoom"

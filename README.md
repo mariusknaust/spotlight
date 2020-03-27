@@ -32,7 +32,7 @@ Spotlight does not require particular configuration.
 
 However, while the default behaviour of spotlight is to discard the images that it downloads, this can be changed by means of the `/etc/spotlight.conf` file.
 
-In addition, for quick testing, the same options can be passed on the line options when calling spotlight.sh directly:
+In addition, for quick testing, the same options can be passed on the command line when calling `spotlight.sh` directly:
 
  * -h shows a small help message
  * -p specifies a working path. Defaults to "$HOME/.local/share/spotlight"
