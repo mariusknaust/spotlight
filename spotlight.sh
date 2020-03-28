@@ -68,7 +68,7 @@ then
 	exit 1
 fi
 
-if [ "$save" = true ] 
+if [ "$store" = true ] 
 then
 	stored_img="$dataPath/archive/$(date +%Y%m%d) $title ($searchTerms).jpg"
 	mkdir -p "$dataPath/archive"
