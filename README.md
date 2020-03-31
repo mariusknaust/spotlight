@@ -30,13 +30,21 @@ Use the system log to get the past image descriptions, e.g. for the the current 
 
 Spotlight does not require particular configuration.
 
-The default behaviour of spotlight is to discard the images that it downloads. The `/etc/spotlight.conf` file allows to alter this, by storing the images in the spotlight working path.
+The default behavior of spotlight is to discard the previous image when it fetches a new one. This behavior can be alter from the command line:
 
-The settings specified in the config file can be overridden when calling `spotlight.sh` directly from the command line:
+ * -h shows a help message
+ * -k keeps the previous image
+ * -d stores the image into the given destination. Defaults to "$HOME/.local/share/backgrounds".
 
- * -h shows a small help message
- * -p specifies a working path. Defaults to "$HOME/.local/share/spotlight"
- * -s stores the images into the folder path/archive/
+### Service
+
+In order to modify the behavior of the service `systemctl edit --user spotlight.service` can be used to overwrite the program invocation:
+
+```
+[Service]
+ExecStart=
+ExecStart=/usr/bin/env bash spotlight.sh -k -d %h/Pictures/Spotlight
+```
 
 ## Packages
 ### Arch Linux

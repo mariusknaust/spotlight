@@ -2,7 +2,7 @@
 Name=Spotlight
 Comment=Fetch a new background image from Spotlight
 Keywords=background;wallpaper;
-Exec=spotlight.sh
+Exec=systemctl start --user spotlight.service
 Icon=preferences-desktop-wallpaper
 Terminal=false
 Type=Application

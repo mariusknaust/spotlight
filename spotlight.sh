@@ -1,38 +1,37 @@
 #!/usr/bin/env bash
 
-conf_file=/etc/spotlight.conf
+dataPath="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-if [ -f "$conf_file" ]; then
-	source "$conf_file"
-fi
+spotlightPath="$dataPath/spotlight"
+backgroundsPath="$dataPath/backgrounds"
 
-if [ -z "$dataPath" ]; then
-	dataPath="${XDG_DATA_HOME:-$HOME/.local/share}/spotlight"
-fi
+keepImage=false
 
-if [ -z "$store" ]; then
-	store=false
-fi
+function showHelp()
+{
+	echo "Usage: $0 [-k] [-d <destination>]"
+	echo ""
+	echo "Options:"
+	echo "	-h shows this help message"
+	echo "	-k keeps the previous image"
+	echo "	-d stores the image into the given destination. Defaults to \"$HOME/.local/share/backgrounds\"."
+}
 
-while getopts ":hp:s" opt; do
-  case ${opt} in
-    h ) echo ""
-        echo "spotlight.sh - Windows 10 Spotlight Background images for Gnome"
-        echo ""
-        echo "Options:"
-        echo "  -h shows this message"
-        echo "  -p specifies a working path. Defaults to \"$HOME/.local/share/spotlight\""
-        echo "  -s stores the images into the folder path/archive/"
-        exit 1
-      ;;
-    p ) dataPath=$OPTARG
-      ;;
-    s ) store=true
-      ;;
-    \? ) echo "Usage: spotlight.sh [-h additional help] [-p working path] [-s store images]"
-         exit 2
-      ;;
-  esac
+while getopts "hkd:" opt
+do
+	case $opt
+	in
+		'k')
+			keepImage=true
+		;;
+		'd')
+			backgroundsPath=$OPTARG
+		;;
+		'h'|'?')
+			showHelp
+			exit 0
+		;;
+	esac
 done
 
 function decodeURL
@@ -54,13 +53,13 @@ item=$(jq -r ".batchrsp.items[0].item" <<< $response)
 landscapeUrl=$(jq -r ".ad.image_fullscreen_001_landscape.u" <<< $item)
 sha256=$(jq -r ".ad.image_fullscreen_001_landscape.sha256" <<< $item | base64 -d | hexdump -ve "1/1 \"%.2x\"")
 title=$(jq -r ".ad.title_text.tx" <<< $item)
-searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | sed 's/.*q=\([^&]*\).*/\1/' | decodeURL)
+searchTerms=$(jq -r ".ad.title_destination_url.u" <<< $item | sed "s/.*q=\([^&]*\).*/\1/" | decodeURL)
 
-mkdir -p "$dataPath"
-img="$dataPath/current_background.jpg"
+mkdir -p "$backgroundsPath"
+imagePath="$backgroundsPath/$(date +%y-%m-%d-%H-%M-%S)-$title ($searchTerms).jpg"
 
-wget -qO "$img" "$landscapeUrl"
-sha256calculated=$(sha256sum $img | cut -d " " -f 1)
+wget -qO "$imagePath" "$landscapeUrl"
+sha256calculated=$(sha256sum "$imagePath" | cut -d " " -f 1)
 
 if [ "$sha256" != "$sha256calculated" ]
 then
@@ -68,16 +67,18 @@ then
 	exit 1
 fi
 
-if [ "$store" = true ] 
-then
-	stored_img="$dataPath/archive/$(date +%Y%m%d) $title ($searchTerms).jpg"
-	mkdir -p "$dataPath/archive"
-	mv "$img" "$stored_img"
-	ln -sfn "$stored_img" "$img"
-fi
-
 gsettings set "org.gnome.desktop.background" picture-options "zoom"
-gsettings set "org.gnome.desktop.background" picture-uri "file://$img"
+gsettings set "org.gnome.desktop.background" picture-uri "'file://$imagePath'"
+
+mkdir -p "$spotlightPath"
+
+previousImagePath="$(readlink "$spotlightPath/background.jpg")"
+ln -sf "$imagePath" "$spotlightPath/background.jpg"
+
+if [ "$keepImage" = false ] && [ -n "$previousImagePath" ] && [ -f "$previousImagePath" ] && [ "$imagePath" != "$previousImagePath" ]
+then
+	rm "$previousImagePath"
+fi
 
 notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low #--hint=string:desktop-entry:spotlight
 systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
