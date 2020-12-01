@@ -46,6 +46,10 @@ ExecStart=
 ExecStart=/usr/bin/env bash spotlight.sh -k -d %h/Pictures/Spotlight
 ```
 
+### Notifications
+
+Notifications can be controlled via the Gnome Control Center.
+
 ## Packages
 ### Arch Linux
 [aur/spotlight](https://aur.archlinux.org/packages/spotlight/)

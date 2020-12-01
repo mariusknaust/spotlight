@@ -80,5 +80,5 @@ then
 	rm "$previousImagePath"
 fi
 
-notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low #--hint=string:desktop-entry:spotlight
+notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
 systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
