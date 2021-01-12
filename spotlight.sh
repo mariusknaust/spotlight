@@ -13,14 +13,19 @@ function showHelp()
 	echo ""
 	echo "Options:"
 	echo "	-h shows this help message"
+	echo "  -s no notification"
 	echo "	-k keeps the previous image"
 	echo "	-d stores the image into the given destination. Defaults to \"$HOME/.local/share/backgrounds\"."
 }
 
-while getopts "hkd:" opt
+while getopts "shkd:" opt
 do
 	case $opt
 	in
+		's')
+			noNotify=true
+		;;
+
 		'k')
 			keepImage=true
 		;;
@@ -67,8 +72,12 @@ then
 	exit 1
 fi
 
+#GNOME
 gsettings set "org.gnome.desktop.background" picture-options "zoom"
 gsettings set "org.gnome.desktop.background" picture-uri "'file://$imagePath'"
+
+#KDE
+qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = 'org.kde.image';d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');d.writeConfig('Image', 'file://$imagePath')}"
 
 mkdir -p "$spotlightPath"
 
@@ -80,5 +89,8 @@ then
 	rm "$previousImagePath"
 fi
 
-notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
+if [ $noNotify = false ]
+then
+	notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
+fi
 systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
