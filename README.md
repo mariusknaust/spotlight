@@ -1,5 +1,3 @@
-:warning: **Currently not working**: Due to changes at the server side. Help welcome, use [issue #9](https://github.com/mariusknaust/spotlight/issues/9).
-
 # spotlight
 Windows 10 Spotlight Background images for Gnome
 

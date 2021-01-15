@@ -39,7 +39,7 @@ function decodeURL
 	printf "%b\n" "$(sed 's/+/ /g; s/%\([0-9A-F][0-9A-F]\)/\\x\1/g')"
 }
 
-response=$(wget -qO- -U "WindowsShellClient/0" "https://arc.msn.com/v3/Delivery/Cache?pid=279978&fmt=json&lc=en,en-US&ctry=US")
+response=$(wget -qO- -U "WindowsShellClient/0" "https://arc.msn.com/v3/Delivery/Placement?pid=209567&fmt=json&cdm=1&lc=en,en-US&ctry=US")
 status=$?
 
 if [ $status -ne 0 ]
