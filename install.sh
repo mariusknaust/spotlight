@@ -32,7 +32,6 @@ elif [ "$action" == "update" ]; then
     UPSTREAM="master"
     LOCAL=$(git rev-parse @)
     REMOTE=$(git rev-parse "$UPSTREAM")
-    BASE=$(git merge-base @ "$UPSTREAM")
     if [ $LOCAL = $REMOTE ]; then
       echo "Already up-to-date."
       exit 0
