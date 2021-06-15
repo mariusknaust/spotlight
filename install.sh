@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script installs the relevant files as the current user. You can also use it to update
 # the installation using "./install.sh update".
