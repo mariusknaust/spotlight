@@ -21,6 +21,7 @@ fi
 if [ "$action" == "install" ]; then
   sudo apt install jq wget sed libglib2.0-0
   mkdir -p ~/.local/share/systemd/user/
+  mkdir -p ~/.local/bin/
 
   cp spotlight.desktop ~/.local/share/applications/spotlight.desktop
   cp spotlight.timer ~/.local/share/systemd/user/spotlight.timer
