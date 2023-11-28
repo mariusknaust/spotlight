@@ -5,4 +5,4 @@ After=network-online.target graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/env bash spotlight.sh
+ExecStart=/usr/bin/env bash -c ~/.local/bin/spotlight.sh

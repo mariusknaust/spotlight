@@ -70,7 +70,8 @@ fi
 # KDE
 if [ "$XDG_CURRENT_DESKTOP" == "KDE" ]; then
 	#echo "Assuming KDE."
-	python3 ksetwallpaper.py --file "$imagePath"
+	SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+	python3 $SCRIPT_DIR/ksetwallpaper.py --file "$imagePath"
 else
 	# Gnome:
 	#echo "Assuming Gnome."
@@ -91,7 +92,7 @@ fi
 
 # KDE:
 if [ "$XDG_CURRENT_DESKTOP" == "KDE" ]; then
-	kdialog --passivepopup "$title ($searchTerms)" 5 --title "Background changed" 
+	kdialog --passivepopup "$title ($searchTerms)" 10 --title "Background changed"
 else
 	# Gnome
 	notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight

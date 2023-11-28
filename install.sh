@@ -19,7 +19,7 @@ else
 fi
 
 if [ "$action" == "install" ]; then
-  sudo apt install jq wget sed libglib2.0-0
+  sudo apt install jq wget sed libglib2.0-0 python3
   mkdir -p ~/.local/share/systemd/user/
   mkdir -p ~/.local/bin/
 
@@ -27,6 +27,7 @@ if [ "$action" == "install" ]; then
   cp spotlight.timer ~/.local/share/systemd/user/spotlight.timer
   cp spotlight.service ~/.local/share/systemd/user/spotlight.service
   cp spotlight.sh ~/.local/bin/spotlight.sh
+  cp ksetwallpaper.py ~/.local/bin/ksetwallpaper.py
   systemctl --user enable spotlight.timer
 elif [ "$action" == "update" ]; then
   if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -48,14 +49,16 @@ elif [ "$action" == "update" ]; then
   cp spotlight.timer ~/.local/share/systemd/user/spotlight.timer
   cp spotlight.service ~/.local/share/systemd/user/spotlight.service
   cp spotlight.sh ~/.local/bin/spotlight.sh
+  cp ksetwallpaper.py ~/.local/bin/ksetwallpaper.py
   systemctl --user enable spotlight.timer
 else
   systemctl --user stop spotlight.timer
   systemctl --user disable spotlight.timer
-  rm ~/.local/share/applications/spotlight.desktop
-  rm ~/.local/share/systemd/user/spotlight.timer
-  rm ~/.local/share/systemd/user/spotlight.service
-  rm ~/.local/bin/spotlight.sh
+  rm -f ~/.local/share/applications/spotlight.desktop
+  rm -f ~/.local/share/systemd/user/spotlight.timer
+  rm -f ~/.local/share/systemd/user/spotlight.service
+  rm -f ~/.local/bin/spotlight.sh
+  rm -f ~/.local/bin/ksetwallpaper.py
 
   # Delete directory only if it is empty:
   if [ -z "$(ls -A ~/.local/share/systemd/user/)" ]; then
