@@ -1,5 +1,7 @@
 # spotlight
-Windows 10 Spotlight Background images for Gnome
+Windows 10 Spotlight Background images for Gnome and KDE.
+
+Tested on Ubuntu 20.04 and Kubuntu 22.04.
 
 ## Installation
 ### System-wide

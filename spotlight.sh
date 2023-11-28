@@ -67,9 +67,18 @@ then
 	exit 1
 fi
 
-gsettings set org.gnome.desktop.background picture-options "zoom"
-gsettings set org.gnome.desktop.background picture-uri "file://$imagePath"
-gsettings set org.gnome.desktop.background picture-uri-dark "file://$imagePath"
+# KDE
+if [ "$XDG_CURRENT_DESKTOP" == "KDE" ]; then
+	#echo "Assuming KDE."
+	SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+	python3 $SCRIPT_DIR/ksetwallpaper.py --file "$imagePath"
+else
+	# Gnome:
+	#echo "Assuming Gnome."
+	gsettings set org.gnome.desktop.background picture-options "zoom"
+	gsettings set org.gnome.desktop.background picture-uri "file://$imagePath"
+	gsettings set org.gnome.desktop.background picture-uri-dark "file://$imagePath"
+fi
 
 mkdir -p "$spotlightPath"
 
@@ -81,5 +90,11 @@ then
 	rm "$previousImagePath"
 fi
 
-notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
+# KDE:
+if [ "$XDG_CURRENT_DESKTOP" == "KDE" ]; then
+	kdialog --passivepopup "$title ($searchTerms)" 10 --title "Background changed"
+else
+	# Gnome
+	notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
+fi
 systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
