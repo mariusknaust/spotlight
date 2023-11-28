@@ -67,9 +67,9 @@ then
 	exit 1
 fi
 
-gsettings set "org.gnome.desktop.background" picture-options "zoom"
-gsettings set "org.gnome.desktop.background" picture-uri "'file://$imagePath'"
-gsettings set "org.gnome.desktop.background" picture-uri-dark "'file://$imagePath'"
+gsettings set org.gnome.desktop.background picture-options "zoom"
+gsettings set org.gnome.desktop.background picture-uri "file://$imagePath"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$imagePath"
 
 mkdir -p "$spotlightPath"
 
